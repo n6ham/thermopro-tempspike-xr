@@ -1,12 +1,7 @@
 import { css } from "https://unpkg.com/lit-element@2.0.1/lit-element.js?module";
 
-const baseImageMarginTop = css`14%`;
 const probeImageHorizontalPosition = css`15%`;
 const probeImageWidth = css`13%`;
-// Device box = base image (560 x 874) plus the 14% top margin for the probes:
-// 560 x (874 + 0.14 * 560) = 560 x 952.4.
-const deviceAspectRatio = css`560 / 952.4`;
-const deviceWidthToHeight = css`0.588`; // 560 / 952.4
 
 export const thermoProTP86xbStyles = css`
   /* The segment7 font is registered at document level in thermopro-tp86xb.js. */
@@ -26,6 +21,28 @@ export const thermoProTP86xbStyles = css`
    * not fixed, so the percentage height resolves to auto and aspect-ratio
    * derives the height from the width instead.
    */
+  /*
+   * Device box = base image (560 x 874) plus, when the probes are drawn, a
+   * top margin of 14% of the width for them: 560 x (874 + 0.14 * 560) =
+   * 560 x 952.4. The LCD overlay is positioned in the same box, so its
+   * top/height differ between the two layouts.
+   */
+  .thermopro-tp86xb-container {
+    --device-aspect-ratio: 560 / 952.4;
+    --device-width-to-height: 0.588; /* 560 / 952.4 */
+    --base-margin-top: 14%;
+    --display-top: 41.6%;
+    --display-height: 43%;
+  }
+
+  .thermopro-tp86xb-container.no-probes {
+    --device-aspect-ratio: 560 / 874;
+    --device-width-to-height: 0.6407; /* 560 / 874 */
+    --base-margin-top: 0;
+    --display-top: 36.36%; /* (0.416 * 952.4 - 78.4) / 874 */
+    --display-height: 46.86%; /* 0.43 * 952.4 / 874 */
+  }
+
   .thermopro-tp86xb-container {
     display: flex;
     justify-content: center;
@@ -34,7 +51,7 @@ export const thermoProTP86xbStyles = css`
     max-width: var(--tp86xb-max-width, 360px);
     height: 100%;
     margin: 0 auto;
-    aspect-ratio: ${deviceAspectRatio};
+    aspect-ratio: var(--device-aspect-ratio);
     container-type: size;
   }
 
@@ -43,8 +60,8 @@ export const thermoProTP86xbStyles = css`
     position: relative;
     isolation: isolate; /* keep the probe images (z-index: -1) inside the card */
     text-align: center;
-    width: min(100cqw, 100cqh * ${deviceWidthToHeight});
-    aspect-ratio: ${deviceAspectRatio};
+    width: min(100cqw, 100cqh * var(--device-width-to-height));
+    aspect-ratio: var(--device-aspect-ratio);
     --font-digits: segment7, monospace;
     --font-labels: 'Arial Narrow', sans-serif; /* Condensed look for labels */
   }
@@ -69,15 +86,15 @@ export const thermoProTP86xbStyles = css`
   .thermopro-tp86xb-image .base {
     display: block;
     width: 100%;
-    margin-top: ${baseImageMarginTop};
+    margin-top: var(--base-margin-top);
   }
 
   .thermopro-tp86xb-display {
     position: absolute;
-    top: 41.6%;
+    top: var(--display-top);
     left: 50%;
     width: 70%;
-    height: 43%;
+    height: var(--display-height);
     transform: translate(-50%, -50%);
     color: rgba(0, 0, 0, 0.5);
   }

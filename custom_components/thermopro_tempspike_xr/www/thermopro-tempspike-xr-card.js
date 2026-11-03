@@ -56,7 +56,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
     const white = this.readProbe(entities, "white");
 
     return html`
-      <div class="thermopro-tp86xb-container">
+      <div class="thermopro-tp86xb-container ${this.renderProbes() === "never" ? "no-probes" : ""}">
         <div class="thermopro-tp86xb-card">
           <div class="thermopro-tp86xb-image">
             ${this.showProbe(black) ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
@@ -119,9 +119,13 @@ class ThermoProTempSpikeXrCard extends LitElement {
     };
   }
 
+  renderProbes() {
+    return this.config?.render_probes ?? DEFAULT_RENDER_PROBES;
+  }
+
   // Whether to draw the probe in the base unit, per the render_probes option.
   showProbe(probe) {
-    switch (this.config.render_probes ?? DEFAULT_RENDER_PROBES) {
+    switch (this.renderProbes()) {
       case "always":
         return true;
       case "never":
@@ -268,7 +272,8 @@ class ThermoProTempSpikeXrCard extends LitElement {
   getGridOptions() {
     return {
       columns: 12,
-      rows: 9,
+      // Without the probes the device is 874 / 952.4 as tall: 9 * 0.918 ≈ 8.
+      rows: this.renderProbes() === "never" ? 8 : 9,
       min_columns: 4,
       min_rows: 4,
     };
