@@ -219,7 +219,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
 
   formatTemperature(temperature) {
     if (temperature === null) {
-      return this.config.show_decimal ? "---.-" : "---";
+      return "---";
     }
     return temperature.toFixed(this.config.show_decimal ? 1 : 0);
   }
