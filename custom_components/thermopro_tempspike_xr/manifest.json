@@ -1,0 +1,13 @@
+{
+  "domain": "thermopro_tempspike_xr",
+  "name": "ThermoPro TempSpike XR",
+  "codeowners": ["@n6ham"],
+  "config_flow": true,
+  "dependencies": ["frontend", "http", "mqtt"],
+  "documentation": "https://github.com/n6ham/thermopro-tempspike-xr",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/n6ham/thermopro-tempspike-xr/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,38 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ThermoPro TempSpike XR",
+        "description": "Enter the MQTT topics rtl_433 publishes each probe's events to. The number at the end is the probe ID, which you can find in Settings → Devices & services → MQTT → Configure → Listen to a topic (listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`).",
+        "data": {
+          "name": "Name",
+          "black_topic": "Black probe topic",
+          "white_topic": "White probe topic"
+        }
+      }
+    },
+    "error": {
+      "invalid_topic": "Invalid MQTT topic.",
+      "same_topic": "The black and white probes need different topics."
+    },
+    "abort": {
+      "already_configured": "A thermometer with these topics is already configured.",
+      "mqtt_not_available": "MQTT is not set up or not connected. Set up the MQTT integration first."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "black_internal_temperature": { "name": "Black probe internal temperature" },
+      "black_ambient_temperature": { "name": "Black probe ambient temperature" },
+      "black_battery": { "name": "Black probe battery" },
+      "white_internal_temperature": { "name": "White probe internal temperature" },
+      "white_ambient_temperature": { "name": "White probe ambient temperature" },
+      "white_battery": { "name": "White probe battery" },
+      "booster_battery": { "name": "Booster battery" }
+    },
+    "binary_sensor": {
+      "black_docked": { "name": "Black probe docked" },
+      "white_docked": { "name": "White probe docked" }
+    }
+  }
+}
