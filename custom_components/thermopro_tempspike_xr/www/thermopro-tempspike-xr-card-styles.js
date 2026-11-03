@@ -192,8 +192,10 @@ export const thermoProTP86xbStyles = css`
     padding-top: 12cqw;
   }
 
+  /* text-align, not justify-self: Safari doesn't support justify-self in
+     block layout, so labels and digits fell back to the card's centering. */
   .temp-type {
-    justify-self: left;
+    text-align: left;
     transform: scaleY(1.2);
   }
 
@@ -206,7 +208,7 @@ export const thermoProTP86xbStyles = css`
   }
 
   .temp-num {
-    justify-self: right;
+    text-align: right;
     /* Makes up for the 1cqw shorter digits so they keep their position. */
     padding-top: 1cqw;
   }
