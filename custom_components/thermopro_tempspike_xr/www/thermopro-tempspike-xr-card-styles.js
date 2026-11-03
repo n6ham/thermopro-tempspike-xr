@@ -4,7 +4,7 @@ const probeImageHorizontalPosition = css`15%`;
 const probeImageWidth = css`13%`;
 
 export const thermoProTP86xbStyles = css`
-  /* The segment7 font is registered at document level in thermopro-tp86xb.js. */
+  /* The segment7 and tp86xb-condensed fonts are registered at document level in the card script. */
 
   :host {
     display: block;
@@ -63,7 +63,7 @@ export const thermoProTP86xbStyles = css`
     width: min(100cqw, 100cqh * var(--device-width-to-height));
     aspect-ratio: var(--device-aspect-ratio);
     --font-digits: segment7, monospace;
-    --font-labels: 'Arial Narrow', sans-serif; /* Condensed look for labels */
+    --font-labels: 'Arial Narrow', tp86xb-condensed, sans-serif; /* Condensed look for labels */
   }
   
   .thermopro-tp86xb-image .probe {
@@ -148,6 +148,7 @@ export const thermoProTP86xbStyles = css`
   }
 
   .probe-display .header span {
+    white-space: nowrap;
     transform: scaleY(1.2);
   }
 
@@ -197,6 +198,7 @@ export const thermoProTP86xbStyles = css`
   }
 
   .temp-type span {
+    white-space: nowrap;
     font-family: var(--font-labels);
     font-weight: bold;
     font-size: 5cqw;

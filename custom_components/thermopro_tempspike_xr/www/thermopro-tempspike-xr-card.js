@@ -25,10 +25,18 @@ const assetUrl = (file) => new URL(`./${file}`, import.meta.url).href;
 
 // Register the 7-segment font at document level: @font-face rules declared
 // inside a shadow root are ignored by Chromium-based browsers.
-if (![...document.fonts].some((font) => font.family === "segment7")) {
-  const segment7 = new FontFace("segment7", `url("${assetUrl("7segment.woff")}") format("woff")`);
-  document.fonts.add(segment7);
-  segment7.load().catch((err) => console.error("Failed to load 7segment.woff", err));
+// Labels use Arial Narrow where installed; mobile platforms lack it, so a
+// bundled condensed font (SIL OFL 1.1) is the fallback.
+const BUNDLED_FONTS = [
+  { family: "segment7", file: "7segment.woff", format: "woff", descriptors: {} },
+  { family: "tp86xb-condensed", file: "roboto-condensed-bold.woff2", format: "woff2", descriptors: { weight: "700" } },
+];
+for (const { family, file, format, descriptors } of BUNDLED_FONTS) {
+  if (![...document.fonts].some((font) => font.family === family)) {
+    const face = new FontFace(family, `url("${assetUrl(file)}") format("${format}")`, descriptors);
+    document.fonts.add(face);
+    face.load().catch((err) => console.error(`Failed to load ${file}`, err));
+  }
 }
 
 class ThermoProTempSpikeXrCard extends LitElement {
