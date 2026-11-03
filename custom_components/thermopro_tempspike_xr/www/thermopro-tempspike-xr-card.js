@@ -14,6 +14,11 @@ const DEFAULT_MAX_WIDTH = "360px";
 
 const BATTERY_MAX_BARS = 3;
 
+// When to draw the probes in the base unit: never, only while the docked
+// sensor is on, or always.
+const RENDER_PROBES_VALUES = ["never", "docked", "always"];
+const DEFAULT_RENDER_PROBES = "always";
+
 // Resolve bundled assets relative to this script, so the card works wherever
 // it is served from.
 const assetUrl = (file) => new URL(`./${file}`, import.meta.url).href;
@@ -54,8 +59,8 @@ class ThermoProTempSpikeXrCard extends LitElement {
       <div class="thermopro-tp86xb-container">
         <div class="thermopro-tp86xb-card">
           <div class="thermopro-tp86xb-image">
-            ${black.docked ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
-            ${white.docked ? html`<img class="probe white" src="${assetUrl("probe-white.png")}"/>` : html``}
+            ${this.showProbe(black) ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
+            ${this.showProbe(white) ? html`<img class="probe white" src="${assetUrl("probe-white.png")}"/>` : html``}
             <img class="base" src="${assetUrl("device.png")}"/>
           </div>
           <div class="thermopro-tp86xb-display">
@@ -106,6 +111,18 @@ class ThermoProTempSpikeXrCard extends LitElement {
       ambient: isDocked ? null : this.readTemperature(entities[`${color}_ambient_temperature`]),
       batteryBars: this.toBars(battery?.state),
     };
+  }
+
+  // Whether to draw the probe in the base unit, per the render_probes option.
+  showProbe(probe) {
+    switch (this.config.render_probes ?? DEFAULT_RENDER_PROBES) {
+      case "always":
+        return true;
+      case "never":
+        return false;
+      default:
+        return probe.docked;
+    }
   }
 
   stateOf(entityId) {
@@ -203,6 +220,9 @@ class ThermoProTempSpikeXrCard extends LitElement {
     }
     if (config.show_decimal !== undefined && typeof config.show_decimal !== "boolean") {
       throw new Error("show_decimal must be true or false (default).");
+    }
+    if (config.render_probes !== undefined && !RENDER_PROBES_VALUES.includes(config.render_probes)) {
+      throw new Error(`render_probes must be one of: ${RENDER_PROBES_VALUES.join(", ")}.`);
     }
     this.style.setProperty("--tp86xb-max-width", this.parseMaxWidth(config.max_width));
     this.config = config;
