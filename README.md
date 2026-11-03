@@ -8,7 +8,9 @@ It reads the probes' radio messages decoded by [rtl_433](https://github.com/merb
 
 - Home Assistant 2024.11 or newer
 - The [MQTT integration](https://www.home-assistant.io/integrations/mqtt/) set up and connected
-- rtl_433 receiving the thermometer (915 MHz in North America) and publishing events to MQTT, e.g. with the [rtl_433 add-on](https://github.com/pbkhrv/rtl_433-hass-addons). The `ThermoPro-TempSpikeXR` decoder publishes each probe on its own topic, such as `rtl_433/events/ThermoPro-TempSpikeXR/138`.
+- rtl_433 receiving the thermometer (915 MHz in North America) and publishing each probe to MQTT on its own topic, such as `rtl_433/events/ThermoPro-TempSpikeXR/138`, e.g. with the [rtl_433 app](https://github.com/pbkhrv/rtl_433-hass-addons)
+
+New to rtl_433 and MQTT? [Setting up rtl_433 and MQTT](docs/SETUP.md) walks through installing the Mosquitto broker, rtl_433 and MQTT Explorer apps.
 
 ## Installation
 
