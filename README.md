@@ -62,10 +62,6 @@ With a single thermometer, no options are needed: the card finds the device by i
 
 In sections view the card fills the grid cell you give it and scales the device to fit; in masonry and panel views it scales with the column width, up to `max_width`.
 
-## Migrating from MQTT sensors in YAML
-
-If you previously defined MQTT sensors for the probes in `configuration.yaml` (for example with `json_attributes_topic`), you can remove them once this integration is set up. The standalone card from [thermopro-tp862b](https://github.com/n6ham/thermopro-tp862b), which reads those YAML sensors, uses a different card type (`custom:thermopro-tp86xb`), so both can be installed at the same time while you switch over.
-
 ## License
 
 [GPL-3.0](LICENSE)

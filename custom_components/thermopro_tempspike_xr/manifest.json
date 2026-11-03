@@ -1,6 +1,7 @@
 {
   "domain": "thermopro_tempspike_xr",
   "name": "ThermoPro TempSpike XR",
+  "categories": ["appliances_cleaning.cooking"],
   "codeowners": ["@n6ham"],
   "config_flow": true,
   "dependencies": ["frontend", "http", "mqtt"],
