@@ -16,8 +16,8 @@ const BATTERY_MAX_BARS = 3;
 
 // When to draw the probes in the base unit: never, only while the docked
 // sensor is on, or always.
-const RENDER_PROBES_VALUES = ["never", "docked", "always"];
-const DEFAULT_RENDER_PROBES = "always";
+const SHOW_PROBES_VALUES = ["never", "docked", "always"];
+const DEFAULT_SHOW_PROBES = "always";
 
 // Resolve bundled assets relative to this script, so the card works wherever
 // it is served from.
@@ -64,7 +64,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
     const white = this.readProbe(entities, "white");
 
     return html`
-      <div class="thermopro-tp86xb-container ${this.renderProbes() === "never" ? "no-probes" : ""}">
+      <div class="thermopro-tp86xb-container ${this.showProbes() === "never" ? "no-probes" : ""}">
         <div class="thermopro-tp86xb-card">
           <div class="thermopro-tp86xb-image">
             ${this.showProbe(black) ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
@@ -127,13 +127,13 @@ class ThermoProTempSpikeXrCard extends LitElement {
     };
   }
 
-  renderProbes() {
-    return this.config?.render_probes ?? DEFAULT_RENDER_PROBES;
+  showProbes() {
+    return this.config?.show_probes ?? DEFAULT_SHOW_PROBES;
   }
 
-  // Whether to draw the probe in the base unit, per the render_probes option.
+  // Whether to draw the probe in the base unit, per the show_probes option.
   showProbe(probe) {
-    switch (this.renderProbes()) {
+    switch (this.showProbes()) {
       case "always":
         return true;
       case "never":
@@ -239,8 +239,8 @@ class ThermoProTempSpikeXrCard extends LitElement {
     if (config.show_decimal !== undefined && typeof config.show_decimal !== "boolean") {
       throw new Error("show_decimal must be true or false (default).");
     }
-    if (config.render_probes !== undefined && !RENDER_PROBES_VALUES.includes(config.render_probes)) {
-      throw new Error(`render_probes must be one of: ${RENDER_PROBES_VALUES.join(", ")}.`);
+    if (config.show_probes !== undefined && !SHOW_PROBES_VALUES.includes(config.show_probes)) {
+      throw new Error(`show_probes must be one of: ${SHOW_PROBES_VALUES.join(", ")}.`);
     }
     this.style.setProperty("--tp86xb-max-width", this.parseMaxWidth(config.max_width));
     this.config = config;
@@ -281,7 +281,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
     return {
       columns: 12,
       // Without the probes the device is 874 / 952.4 as tall: 9 * 0.918 ≈ 8.
-      rows: this.renderProbes() === "never" ? 8 : 9,
+      rows: this.showProbes() === "never" ? 8 : 9,
       min_columns: 4,
       min_rows: 4,
     };

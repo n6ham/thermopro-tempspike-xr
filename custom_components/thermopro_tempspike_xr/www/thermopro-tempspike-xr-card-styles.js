@@ -207,11 +207,17 @@ export const thermoProTP86xbStyles = css`
 
   .temp-num {
     justify-self: right;
+    /* Makes up for the 1cqw shorter digits so they keep their position. */
+    padding-top: 1cqw;
   }
 
   .temp-num span {
+    white-space: nowrap;
     font-family: var(--font-digits);
-    font-size: 24cqw;
-    line-height: 1; 
+    /* Four 7-segment digits are 1.88em wide (the period has no width): at
+       23cqw they need 43.2cqw of the 44cqw column (50cqw minus 2 * 3cqw
+       padding), so "---.-" and "100.0" fit on one line. */
+    font-size: 23cqw;
+    line-height: 1;
   }
 `;

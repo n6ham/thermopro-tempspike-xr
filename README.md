@@ -58,7 +58,7 @@ With a single thermometer, no options are needed: the card finds the device by i
 | `device_id`    | string           | first TempSpike XR device  | Which thermometer to show, if you have more than one. |
 | `display_unit` | `C` \| `F`       | Home Assistant unit system | Unit used on the display. |
 | `show_decimal` | boolean          | `false`                    | Show temperatures with one decimal place (`69.4`) instead of whole numbers (`69`). |
-| `render_probes` | `never` \| `docked` \| `always` | `always` | When to draw the probes in the base unit: never, only while the probe is docked (its docked sensor is on, or it has no temperature readings, e.g. they expired), or always. |
+| `show_probes` | `never` \| `docked` \| `always` | `always` | When to draw the probes in the base unit: never, only while the probe is docked (its docked sensor is on, or it has no temperature readings, e.g. they expired), or always. |
 | `max_width`    | number \| string | `360px`                    | Maximum width of the device. A number is treated as pixels; any CSS length is accepted (e.g. `"400px"`, `"30vw"`). |
 
 In sections view the card fills the grid cell you give it and scales the device to fit; in masonry and panel views it scales with the column width, up to `max_width`.
