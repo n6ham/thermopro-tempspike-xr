@@ -104,11 +104,17 @@ class ThermoProTempSpikeXrCard extends LitElement {
   readProbe(entities, color) {
     const docked = this.stateOf(entities[`${color}_docked`]);
     const battery = this.stateOf(entities[`${color}_battery`]);
-    const isDocked = docked?.state === "on";
+    if (docked?.state === "on") {
+      return { docked: true, internal: null, ambient: null, batteryBars: this.toBars(battery?.state) };
+    }
+    const internal = this.readTemperature(entities[`${color}_internal_temperature`]);
+    const ambient = this.readTemperature(entities[`${color}_ambient_temperature`]);
     return {
-      docked: isDocked,
-      internal: isDocked ? null : this.readTemperature(entities[`${color}_internal_temperature`]),
-      ambient: isDocked ? null : this.readTemperature(entities[`${color}_ambient_temperature`]),
+      // No readings (expired or never received) most likely means the probe
+      // is sitting in the base, so treat it as docked.
+      docked: internal === null && ambient === null,
+      internal,
+      ambient,
       batteryBars: this.toBars(battery?.state),
     };
   }
