@@ -9,6 +9,14 @@
           "black_topic": "Black probe topic",
           "white_topic": "White probe topic"
         }
+      },
+      "reconfigure": {
+        "title": "Change probe topics",
+        "description": "Enter the MQTT topics rtl_433 publishes each probe's events to. The number at the end is the probe ID.",
+        "data": {
+          "black_topic": "Black probe topic",
+          "white_topic": "White probe topic"
+        }
       }
     },
     "error": {
@@ -17,7 +25,8 @@
     },
     "abort": {
       "already_configured": "A thermometer with these topics is already configured.",
-      "mqtt_not_available": "MQTT is not set up or not connected. Set up the MQTT integration first."
+      "mqtt_not_available": "MQTT is not set up or not connected. Set up the MQTT integration first.",
+      "reconfigure_successful": "The probe topics were updated."
     }
   },
   "entity": {

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Any
 
 import voluptuous as vol
@@ -34,22 +35,13 @@ class TempSpikeConfigFlow(ConfigFlow, domain=DOMAIN):
 
         errors: dict[str, str] = {}
         if user_input is not None:
-            black = user_input[CONF_BLACK_TOPIC].strip()
-            white = user_input[CONF_WHITE_TOPIC].strip()
-            for key, topic in ((CONF_BLACK_TOPIC, black), (CONF_WHITE_TOPIC, white)):
-                try:
-                    valid_subscribe_topic(topic)
-                except vol.Invalid:
-                    errors[key] = "invalid_topic"
-            if not errors and black == white:
-                errors["base"] = "same_topic"
-
+            topics, errors = _validate_topics(user_input)
             if not errors:
-                await self.async_set_unique_id(f"{black}|{white}")
+                await self.async_set_unique_id(_unique_id(topics))
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
                     title=user_input[CONF_NAME].strip() or DEFAULT_NAME,
-                    data={CONF_BLACK_TOPIC: black, CONF_WHITE_TOPIC: white},
+                    data=topics,
                 )
 
         defaults = user_input or {}
@@ -58,14 +50,66 @@ class TempSpikeConfigFlow(ConfigFlow, domain=DOMAIN):
                 vol.Required(
                     CONF_NAME, default=defaults.get(CONF_NAME, DEFAULT_NAME)
                 ): str,
-                vol.Required(
-                    CONF_BLACK_TOPIC,
-                    default=defaults.get(CONF_BLACK_TOPIC, DEFAULT_TOPIC_PREFIX),
-                ): str,
-                vol.Required(
-                    CONF_WHITE_TOPIC,
-                    default=defaults.get(CONF_WHITE_TOPIC, DEFAULT_TOPIC_PREFIX),
-                ): str,
+                **_topics_schema(defaults),
             }
         )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
+
+    async def async_step_reconfigure(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
+        """Change the two probe topics of an existing thermometer."""
+        entry = self._get_reconfigure_entry()
+
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            topics, errors = _validate_topics(user_input)
+            if not errors:
+                unique_id = _unique_id(topics)
+                if unique_id != entry.unique_id:
+                    await self.async_set_unique_id(unique_id)
+                    self._abort_if_unique_id_configured()
+                return self.async_update_reload_and_abort(
+                    entry, unique_id=unique_id, data_updates=topics
+                )
+
+        schema = vol.Schema(_topics_schema(user_input or entry.data))
+        return self.async_show_form(
+            step_id="reconfigure", data_schema=schema, errors=errors
+        )
+
+
+def _topics_schema(defaults: Mapping[str, Any]) -> dict[vol.Marker, Any]:
+    return {
+        vol.Required(
+            CONF_BLACK_TOPIC,
+            default=defaults.get(CONF_BLACK_TOPIC, DEFAULT_TOPIC_PREFIX),
+        ): str,
+        vol.Required(
+            CONF_WHITE_TOPIC,
+            default=defaults.get(CONF_WHITE_TOPIC, DEFAULT_TOPIC_PREFIX),
+        ): str,
+    }
+
+
+def _validate_topics(
+    user_input: dict[str, Any],
+) -> tuple[dict[str, str], dict[str, str]]:
+    """Return the stripped topics and any form errors."""
+    topics = {
+        CONF_BLACK_TOPIC: user_input[CONF_BLACK_TOPIC].strip(),
+        CONF_WHITE_TOPIC: user_input[CONF_WHITE_TOPIC].strip(),
+    }
+    errors: dict[str, str] = {}
+    for key, topic in topics.items():
+        try:
+            valid_subscribe_topic(topic)
+        except vol.Invalid:
+            errors[key] = "invalid_topic"
+    if not errors and topics[CONF_BLACK_TOPIC] == topics[CONF_WHITE_TOPIC]:
+        errors["base"] = "same_topic"
+    return topics, errors
+
+
+def _unique_id(topics: Mapping[str, str]) -> str:
+    return f"{topics[CONF_BLACK_TOPIC]}|{topics[CONF_WHITE_TOPIC]}"
