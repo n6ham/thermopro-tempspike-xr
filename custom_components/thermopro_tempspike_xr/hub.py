@@ -1,7 +1,8 @@
 """MQTT listener that keeps the latest state of both TempSpike XR probes.
 
 Messages are produced by the rtl_433 ``ThermoPro-TempSpikeXR`` decoder. Each
-probe publishes on its own topic. A message is sent either by the probe itself
+probe publishes on its own topic, and its ``color`` field says which probe it
+is. A message is sent either by the probe itself
 (``is_probe`` = 1, carries the probe battery level) or relayed by the booster
 (``is_booster`` = 1, carries the booster battery level instead). Flags such as
 ``is_docked``, ``is_probe`` and ``is_booster`` are omitted when they are 0.
@@ -11,7 +12,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime
-from functools import partial
 import json
 import logging
 from typing import Any
@@ -27,8 +27,7 @@ from homeassistant.util import dt as dt_util
 from .const import (
     BATTERY_MAX_BARS,
     COLORS,
-    CONF_BLACK_TOPIC,
-    CONF_WHITE_TOPIC,
+    CONF_TOPICS,
     DOMAIN,
     EXPIRE_AFTER,
 )
@@ -56,10 +55,7 @@ class TempSpikeHub:
     def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
         self.hass = hass
         self.entry_id = entry.entry_id
-        self.topics = {
-            "black": entry.data[CONF_BLACK_TOPIC],
-            "white": entry.data[CONF_WHITE_TOPIC],
-        }
+        self.topics: list[str] = entry.data[CONF_TOPICS]
         self.probes = {color: ProbeState() for color in COLORS}
         self.booster_battery_bars: int | None = None
         self.signal = f"{DOMAIN}_update_{entry.entry_id}"
@@ -73,10 +69,10 @@ class TempSpikeHub:
 
     async def async_start(self) -> None:
         """Subscribe to the probe topics."""
-        for color, topic in self.topics.items():
+        for topic in self.topics:
             self._unsubscribers.append(
                 await mqtt.async_subscribe(
-                    self.hass, topic, partial(self._handle_message, color), qos=0
+                    self.hass, topic, self._handle_message, qos=0
                 )
             )
         self._unsubscribers.append(
@@ -92,7 +88,7 @@ class TempSpikeHub:
             self._unsubscribers.pop()()
 
     @callback
-    def _handle_message(self, color: str, msg: mqtt.ReceiveMessage) -> None:
+    def _handle_message(self, msg: mqtt.ReceiveMessage) -> None:
         try:
             payload = json.loads(msg.payload)
         except ValueError:
@@ -101,14 +97,14 @@ class TempSpikeHub:
         if not isinstance(payload, dict):
             return
 
-        reported_color = payload.get("color")
-        if reported_color and reported_color != color:
-            _LOGGER.warning(
-                "Message on %s reports a %s probe, but the topic is configured for the %s probe",
+        color = payload.get("color")
+        if color not in self.probes:
+            _LOGGER.debug(
+                "Ignoring message without a known probe color on %s: %s",
                 msg.topic,
-                reported_color,
-                color,
+                msg.payload,
             )
+            return
 
         probe = self.probes[color]
         probe.internal_c = _temperature_c(payload, "temperature_int")

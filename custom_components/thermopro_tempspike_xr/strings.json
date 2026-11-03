@@ -3,25 +3,25 @@
     "step": {
       "user": {
         "title": "ThermoPro TempSpike XR",
-        "description": "Enter the MQTT topics rtl_433 publishes each probe's events to. The number at the end is the probe ID, which you can find in Settings → Devices & services → MQTT → Configure → Listen to a topic (listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`).",
+        "description": "Enter the MQTT topics rtl_433 publishes the two probes' events to, in any order. The number at the end is the probe ID, which you can find in Settings → Devices & services → MQTT → Configure → Listen to a topic (listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`).",
         "data": {
           "name": "Name",
-          "black_topic": "Black probe topic",
-          "white_topic": "White probe topic"
+          "probe_1_topic": "First probe topic",
+          "probe_2_topic": "Second probe topic"
         }
       },
       "reconfigure": {
         "title": "Change probe topics",
-        "description": "Enter the MQTT topics rtl_433 publishes each probe's events to. The number at the end is the probe ID.",
+        "description": "Enter the MQTT topics rtl_433 publishes the two probes' events to, in any order. The number at the end is the probe ID.",
         "data": {
-          "black_topic": "Black probe topic",
-          "white_topic": "White probe topic"
+          "probe_1_topic": "First probe topic",
+          "probe_2_topic": "Second probe topic"
         }
       }
     },
     "error": {
       "invalid_topic": "Invalid MQTT topic.",
-      "same_topic": "The black and white probes need different topics."
+      "same_topic": "The two probes need different topics."
     },
     "abort": {
       "already_configured": "A thermometer with these topics is already configured.",

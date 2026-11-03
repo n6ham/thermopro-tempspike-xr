@@ -67,7 +67,7 @@ MQTT Explorer shows every topic on the broker and the messages arriving on it. I
    - **Host:** `core-mosquitto` (the Mosquitto app's hostname inside Home Assistant). Use your Home Assistant's IP address instead if `core-mosquitto` doesn't connect.
    - **Port:** `1883`
    - **Username / Password:** the `explorer` login you added in [step 4 of Mosquitto broker](#1-mosquitto-broker).
-4. Take the probes out of the base so they start transmitting, and expand `rtl_433 → events → ThermoPro-TempSpikeXR`. Each probe shows up as a topic named after its ID, e.g. `138`. Select a topic and check the `color` field of its messages to tell which probe is black and which is white.
+4. Take the probes out of the base so they start transmitting, and expand `rtl_433 → events → ThermoPro-TempSpikeXR`. Each probe shows up as a topic named after its ID, e.g. `138`. You need both IDs; which one is black and which is white doesn't matter.
 
 Without MQTT Explorer, you can do the same check in **Settings → Devices & services → MQTT → Configure**: listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`.
 

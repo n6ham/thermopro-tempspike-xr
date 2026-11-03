@@ -29,7 +29,7 @@ Copy the [`custom_components/thermopro_tempspike_xr`](custom_components/thermopr
 ## Setup
 
 1. Go to **Settings → Devices & services → Add integration** and choose **ThermoPro TempSpike XR**.
-2. Enter the MQTT topic for each probe. The number at the end of the topic is the probe ID. To find it, go to **Settings → Devices & services → MQTT → Configure**, listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`, and check the `color` field of the messages that arrive.
+2. Enter the MQTT topics of the two probes, in any order: the integration tells the black and white probes apart by the `color` field of their messages. The number at the end of each topic is the probe ID. To find the IDs, go to **Settings → Devices & services → MQTT → Configure** and listen to `rtl_433/events/ThermoPro-TempSpikeXR/#`.
 
 Each thermometer gets one device with these entities:
 

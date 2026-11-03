@@ -10,7 +10,8 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 
-from .const import DOMAIN
+from .config_flow import topics_unique_id
+from .const import CONF_BLACK_TOPIC, CONF_TOPICS, CONF_WHITE_TOPIC, DOMAIN
 from .frontend import async_register_card
 from .hub import TempSpikeHub
 
@@ -36,6 +37,21 @@ async def async_setup_entry(hass: HomeAssistant, entry: TempSpikeConfigEntry) ->
     await hub.async_start()
     entry.runtime_data = hub
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    return True
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate an old config entry to the current version."""
+    if entry.version > 2:
+        return False
+    if entry.version == 1:
+        topics = [entry.data[CONF_BLACK_TOPIC], entry.data[CONF_WHITE_TOPIC]]
+        hass.config_entries.async_update_entry(
+            entry,
+            data={CONF_TOPICS: topics},
+            unique_id=topics_unique_id(topics),
+            version=2,
+        )
     return True
 
 

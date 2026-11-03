@@ -5,6 +5,11 @@ from typing import Final
 
 DOMAIN: Final = "thermopro_tempspike_xr"
 
+CONF_TOPICS: Final = "topics"
+CONF_PROBE_1_TOPIC: Final = "probe_1_topic"
+CONF_PROBE_2_TOPIC: Final = "probe_2_topic"
+
+# Config entry version 1 keys, used only for migration.
 CONF_BLACK_TOPIC: Final = "black_topic"
 CONF_WHITE_TOPIC: Final = "white_topic"
 
