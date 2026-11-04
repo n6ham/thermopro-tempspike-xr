@@ -10,7 +10,7 @@ const DOMAIN = "thermopro_tempspike_xr";
 const CARD_TYPE = "thermopro-tempspike-xr-card";
 
 // Default upper bound for the device width; override with the max_width option.
-const DEFAULT_MAX_WIDTH = "360px";
+const DEFAULT_MAX_WIDTH = "437px";
 
 const BATTERY_MAX_BARS = 3;
 
@@ -245,38 +245,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
       throw new Error(`show_probes must be one of: ${SHOW_PROBES_VALUES.join(", ")}.`);
     }
     this.style.setProperty("--tp86xb-max-width", this.parseMaxWidth(config.max_width));
-    const aspectRatio = this.parseAspectRatio(config.aspect_ratio);
-    if (aspectRatio === null) {
-      this.style.removeProperty("--tp86xb-aspect-ratio");
-    } else {
-      this.style.setProperty("--tp86xb-aspect-ratio", aspectRatio);
-    }
     this.config = config;
-  }
-
-  // Accepts a positive number or a "width/height" or "width:height" string,
-  // e.g. 1, 0.75, "4/3", "4:3". Returns width divided by height.
-  parseAspectRatio(aspectRatio) {
-    if (aspectRatio === undefined || aspectRatio === null) {
-      return null;
-    }
-    let ratio = NaN;
-    if (typeof aspectRatio === "number") {
-      ratio = aspectRatio;
-    } else if (typeof aspectRatio === "string") {
-      const parts = aspectRatio.split(/[/:]/).map((part) => Number(part.trim()));
-      if (parts.length === 1) {
-        ratio = parts[0];
-      } else if (parts.length === 2) {
-        ratio = parts[0] / parts[1];
-      }
-    }
-    if (!Number.isFinite(ratio) || ratio <= 0) {
-      throw new Error(
-        `Invalid aspect_ratio: ${aspectRatio}. Use a positive number or "width/height" (e.g. 1 or "4/3").`
-      );
-    }
-    return String(ratio);
   }
 
   // Accepts a number (pixels) or any CSS length, e.g. 400, "400px", "30vw".
@@ -305,7 +274,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
   // distribute cards over the available columns in masonry view.
   getCardSize() {
     const height = this.offsetHeight;
-    return height > 0 ? Math.ceil(height / 50) : 13;
+    return height > 0 ? Math.ceil(height / 50) : 12;
   }
 
   // The rules for sizing the card in the grid in sections view. The device is
@@ -313,8 +282,7 @@ class ThermoProTempSpikeXrCard extends LitElement {
   getGridOptions() {
     return {
       columns: 12,
-      // Without the probes the device is 874 / 952.4 as tall: 9 * 0.918 ≈ 8.
-      rows: this.showProbes() === "never" ? 8 : 9,
+      rows: 8,
       min_columns: 4,
       min_rows: 4,
     };

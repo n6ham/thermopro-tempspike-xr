@@ -30,6 +30,7 @@ export const thermoProTP86xbStyles = css`
   .thermopro-tp86xb-container {
     --device-aspect-ratio: 560 / 952.4;
     --device-width-to-height: 0.588; /* 560 / 952.4 */
+    --side-padding: 0.1222; /* (1 - 0.588 / 0.7781) / 2 */
     --base-margin-top: 14%;
     --display-top: 41.6%;
     --display-height: 43%;
@@ -38,39 +39,40 @@ export const thermoProTP86xbStyles = css`
   .thermopro-tp86xb-container.no-probes {
     --device-aspect-ratio: 560 / 874;
     --device-width-to-height: 0.6407; /* 560 / 874 */
+    --side-padding: 0.0883; /* (1 - 0.6407 / 0.7781) / 2 */
     --base-margin-top: 0;
     --display-top: 36.36%; /* (0.416 * 952.4 - 78.4) / 874 */
     --display-height: 46.86%; /* 0.43 * 952.4 / 874 */
   }
 
   .thermopro-tp86xb-container {
-    --frame-ratio: var(--tp86xb-aspect-ratio, var(--device-width-to-height));
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    max-width: var(--tp86xb-max-width, 360px);
+    max-width: var(--tp86xb-max-width, 437px);
     height: 100%;
     margin: 0 auto;
-    aspect-ratio: var(--frame-ratio);
+    aspect-ratio: 568 / 730;
     container-type: size;
   }
 
-  /* Box with the aspect_ratio proportions; the device is centered in it. */
+  /* The device padded at the sides to 568 x 730: the largest such box that fits. */
   .thermopro-tp86xb-frame {
+    --frame-width: min(100cqw, 100cqh * 0.7781); /* 568 / 730 */
+    box-sizing: border-box;
+    width: var(--frame-width);
+    aspect-ratio: 568 / 730;
+    padding: 0 calc(var(--frame-width) * var(--side-padding));
     display: flex;
-    justify-content: center;
     align-items: center;
-    width: min(100cqw, 100cqh * var(--frame-ratio));
-    aspect-ratio: var(--frame-ratio);
   }
 
-  /* The device: the largest box with the device's proportions that fits. */
   .thermopro-tp86xb-card {
     position: relative;
     isolation: isolate; /* keep the probe images (z-index: -1) inside the card */
     text-align: center;
-    width: min(100%, 100% * var(--device-width-to-height) / var(--frame-ratio));
+    width: 100%;
     aspect-ratio: var(--device-aspect-ratio);
     --font-digits: segment7, monospace;
     --font-labels: 'Arial Narrow', tp86xb-condensed, sans-serif; /* Condensed look for labels */

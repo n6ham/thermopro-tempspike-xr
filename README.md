@@ -61,8 +61,7 @@ With a single thermometer, no options are needed: the card finds the device by i
 | `display_unit` | `C` \| `F`       | Home Assistant unit system | Unit used on the display. |
 | `show_decimal` | boolean          | `false`                    | Show temperatures with one decimal place (`69.4`) instead of whole numbers (`69`). |
 | `show_probes` | `never` \| `docked` \| `always` | `always` | When to draw the probes in the base unit: never, only while the probe is docked (its docked sensor is on, or it has no temperature readings, e.g. they expired), or always. |
-| `max_width`    | number \| string | `360px`                    | Maximum width of the device. A number is treated as pixels; any CSS length is accepted (e.g. `"400px"`, `"30vw"`). |
-| `aspect_ratio` | number \| string | device proportions         | Width-to-height ratio of the area the device is drawn in, e.g. `1` or `"4/3"`. The device is centered in it with empty space at the sides. Cards with the same `aspect_ratio` (and `max_width`) scale together and their devices stay the same height. |
+| `max_width`    | number \| string | `437px`                    | Maximum width of the device. A number is treated as pixels; any CSS length is accepted (e.g. `"400px"`, `"30vw"`). |
 
 In sections view the card fills the grid cell you give it and scales the device to fit; in masonry and panel views it scales with the column width, up to `max_width`.
 
