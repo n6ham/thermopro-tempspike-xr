@@ -65,23 +65,25 @@ class ThermoProTempSpikeXrCard extends LitElement {
 
     return html`
       <div class="thermopro-tp86xb-container ${this.showProbes() === "never" ? "no-probes" : ""}">
-        <div class="thermopro-tp86xb-card">
-          <div class="thermopro-tp86xb-image">
-            ${this.showProbe(black) ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
-            ${this.showProbe(white) ? html`<img class="probe white" src="${assetUrl("probe-white.png")}"/>` : html``}
-            <img class="base" src="${assetUrl("device.png")}"/>
-          </div>
-          <div class="thermopro-tp86xb-display">
-            <div class="lcd-screen">
-              <svg class="divider" xmlns="http://www.w3.org/2000/svg">
-                <line x1="50%" y1="2%" x2="50%" y2="50%"/>
-                <circle cx="50%" cy="57%" r="7%" fill="none"/>
-                <line x1="50%" y1="64%" x2="50%" y2="98%"/>
-              </svg>
-              ${this.renderProbe(black, "black")}
-              ${this.renderProbe(white, "white")}
-              <div class="unit">
-                <span>°${this.displayUnit()}</span>
+        <div class="thermopro-tp86xb-frame">
+          <div class="thermopro-tp86xb-card">
+            <div class="thermopro-tp86xb-image">
+              ${this.showProbe(black) ? html`<img class="probe black" src="${assetUrl("probe-black.png")}"/>` : html``}
+              ${this.showProbe(white) ? html`<img class="probe white" src="${assetUrl("probe-white.png")}"/>` : html``}
+              <img class="base" src="${assetUrl("device.png")}"/>
+            </div>
+            <div class="thermopro-tp86xb-display">
+              <div class="lcd-screen">
+                <svg class="divider" xmlns="http://www.w3.org/2000/svg">
+                  <line x1="50%" y1="2%" x2="50%" y2="50%"/>
+                  <circle cx="50%" cy="57%" r="7%" fill="none"/>
+                  <line x1="50%" y1="64%" x2="50%" y2="98%"/>
+                </svg>
+                ${this.renderProbe(black, "black")}
+                ${this.renderProbe(white, "white")}
+                <div class="unit">
+                  <span>°${this.displayUnit()}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -243,7 +245,38 @@ class ThermoProTempSpikeXrCard extends LitElement {
       throw new Error(`show_probes must be one of: ${SHOW_PROBES_VALUES.join(", ")}.`);
     }
     this.style.setProperty("--tp86xb-max-width", this.parseMaxWidth(config.max_width));
+    const aspectRatio = this.parseAspectRatio(config.aspect_ratio);
+    if (aspectRatio === null) {
+      this.style.removeProperty("--tp86xb-aspect-ratio");
+    } else {
+      this.style.setProperty("--tp86xb-aspect-ratio", aspectRatio);
+    }
     this.config = config;
+  }
+
+  // Accepts a positive number or a "width/height" or "width:height" string,
+  // e.g. 1, 0.75, "4/3", "4:3". Returns width divided by height.
+  parseAspectRatio(aspectRatio) {
+    if (aspectRatio === undefined || aspectRatio === null) {
+      return null;
+    }
+    let ratio = NaN;
+    if (typeof aspectRatio === "number") {
+      ratio = aspectRatio;
+    } else if (typeof aspectRatio === "string") {
+      const parts = aspectRatio.split(/[/:]/).map((part) => Number(part.trim()));
+      if (parts.length === 1) {
+        ratio = parts[0];
+      } else if (parts.length === 2) {
+        ratio = parts[0] / parts[1];
+      }
+    }
+    if (!Number.isFinite(ratio) || ratio <= 0) {
+      throw new Error(
+        `Invalid aspect_ratio: ${aspectRatio}. Use a positive number or "width/height" (e.g. 1 or "4/3").`
+      );
+    }
+    return String(ratio);
   }
 
   // Accepts a number (pixels) or any CSS length, e.g. 400, "400px", "30vw".

@@ -44,6 +44,7 @@ export const thermoProTP86xbStyles = css`
   }
 
   .thermopro-tp86xb-container {
+    --frame-ratio: var(--tp86xb-aspect-ratio, var(--device-width-to-height));
     display: flex;
     justify-content: center;
     align-items: center;
@@ -51,8 +52,17 @@ export const thermoProTP86xbStyles = css`
     max-width: var(--tp86xb-max-width, 360px);
     height: 100%;
     margin: 0 auto;
-    aspect-ratio: var(--device-aspect-ratio);
+    aspect-ratio: var(--frame-ratio);
     container-type: size;
+  }
+
+  /* Box with the aspect_ratio proportions; the device is centered in it. */
+  .thermopro-tp86xb-frame {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: min(100cqw, 100cqh * var(--frame-ratio));
+    aspect-ratio: var(--frame-ratio);
   }
 
   /* The device: the largest box with the device's proportions that fits. */
@@ -60,7 +70,7 @@ export const thermoProTP86xbStyles = css`
     position: relative;
     isolation: isolate; /* keep the probe images (z-index: -1) inside the card */
     text-align: center;
-    width: min(100cqw, 100cqh * var(--device-width-to-height));
+    width: min(100%, 100% * var(--device-width-to-height) / var(--frame-ratio));
     aspect-ratio: var(--device-aspect-ratio);
     --font-digits: segment7, monospace;
     --font-labels: 'Arial Narrow', tp86xb-condensed, sans-serif; /* Condensed look for labels */
