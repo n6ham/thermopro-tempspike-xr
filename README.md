@@ -68,3 +68,5 @@ In sections view the card fills the grid cell you give it and scales the device 
 ## License
 
 [GPL-3.0](LICENSE)
+
+7segment font (c) Jan Bobrowski (OFL) - http://torinak.com/7segment
